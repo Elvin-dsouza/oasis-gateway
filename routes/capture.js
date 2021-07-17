@@ -13,6 +13,19 @@ const logSensorInformation = async (pm25, pm10, pm1, temperature, humidity) => {
   await producer.connect();
   if(!lastLog) {
     lastLog = Date.now();
+    await producer.send({
+      topic: 'sensor-output-log-hist',
+      messages: [
+        { value: JSON.stringify({ 
+          pm25,
+          pm10,
+          pm1,
+          temperature,
+          humidity,
+          timestamp: Date.now()
+        }) },
+      ],
+    });
   }
   if(Date.now() >= (lastLog + (60 * 1000 * 30))){
     lastLog = Date.now();

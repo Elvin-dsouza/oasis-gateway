@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const { Kafka } = require('kafkajs');
 var loki = require('lokijs');
-var db = new loki('Example');
+var db = new loki('Logs');
 const kafka = new Kafka({
   clientId: 'oasis-sensor-log',
   brokers: [`acesd.online:29092`]
@@ -23,7 +23,7 @@ const logSensorInformation = async (pm25, pm10, pm1, temperature, humidity) => {
       humidity,
       timestamp: Date.now()
     });
-    
+
     await producer.send({
       topic: 'sensor-output-log-hist',
       messages: [
@@ -40,6 +40,15 @@ const logSensorInformation = async (pm25, pm10, pm1, temperature, humidity) => {
   }
   if(Date.now() >= (lastLog + (60 * 1000 * 30))){
     lastLog = Date.now();
+    log.insert({ 
+      pm25,
+      pm10,
+      pm1,
+      temperature,
+      humidity,
+      timestamp: Date.now()
+    });
+
     await producer.send({
       topic: 'sensor-output-log-hist',
       messages: [
@@ -82,6 +91,10 @@ router.get('/', function(req, res, next) {
     req.query.humidity
   );
   res.send('OK');
+});
+
+router.get('/history', function(req, res, next) {
+  return res.json(log);
 });
 
 module.exports = router;

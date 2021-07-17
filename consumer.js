@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const kafka = new Kafka({
   clientId: 'oasis-sensor-log',
   logLevel:logLevel.NOTHING,
-  brokers: ['localhost:29092']
+  brokers: ['acesd.online:29092']
 });
 
 const waitForMessages = async () => {

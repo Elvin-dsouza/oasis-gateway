@@ -1,16 +1,37 @@
 var express = require('express');
 var router = express.Router();
 const { Kafka } = require('kafkajs')
-
+var loki = require('lokijs');
 const kafka = new Kafka({
   clientId: 'oasis-sensor-log',
-  brokers: [`localhost:29092`]
+  brokers: [`acesd.online:29092`]
 });
 
+let lastLog = 0;
 
 const logSensorInformation = async (pm25, pm10, pm1, temperature, humidity) => {
   const producer = kafka.producer()
-  await producer.connect()
+  await producer.connect();
+  if(!lastLog) {
+    lastLog = Date.now();
+  }
+  if(Date.now() >= (lastLog + (60 * 1000 * 30))){
+    lastLog = Date.now();
+    await producer.send({
+      topic: 'sensor-output-log-hist',
+      messages: [
+        { value: JSON.stringify({ 
+          pm25,
+          pm10,
+          pm1,
+          temperature,
+          humidity,
+          timestamp: Date.now()
+        }) },
+      ],
+    });
+  }
+  
   await producer.send({
     
     topic: 'sensor-output',

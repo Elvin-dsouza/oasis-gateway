@@ -38,7 +38,7 @@ const logSensorInformation = async (pm25, pm10, pm1, temperature, humidity) => {
       ],
     });
   }
-  if(Date.now() >= (lastLog + (60 * 1000 * 30))){
+  if(Date.now() >= (lastLog + (60 * 1000 * 1))){
     lastLog = Date.now();
     log.insert({ 
       pm25,

@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 const { Kafka } = require('kafkajs')
-var loki = require('lokijs');
 const kafka = new Kafka({
   clientId: 'oasis-sensor-log',
   brokers: [`acesd.online:29092`]

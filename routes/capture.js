@@ -79,7 +79,7 @@ const logSensorInformation = async ({pm25, pm10, pm1, temperature, humidity}) =>
       }) },
     ],
   });
-  console.log("COMPACTION: send consolidated event");
+  console.log("COMPACTION:", {pm25, pm10, pm1, temperature, humidity, timestamp: Date.now()});
   await producer.disconnect();
 };
 

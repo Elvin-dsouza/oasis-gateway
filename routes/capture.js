@@ -34,18 +34,7 @@ const logHistoricalStream = async (pm25, pm10, pm1, temperature, humidity) => {
 let lastLog = 0;
 const logSensorInformation = async (pm25, pm10, pm1, temperature, humidity) => {
   const producer = kafka.producer();
-  
-  
   await producer.connect();
-  
-  if(!lastLog) {
-    lastLog = Date.now();
-    await logHistoricalStream(pm25, pm10, pm1, temperature, humidity);
-  }
-  if(Date.now() >= (lastLog + (60 * 1000 * 1))){
-    lastLog = Date.now();
-    await logHistoricalStream(pm25, pm10, pm1, temperature, humidity);
-  }
   
   await producer.send({
     topic: 'sensor-output',
